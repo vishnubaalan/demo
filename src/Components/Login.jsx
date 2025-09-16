@@ -58,14 +58,14 @@ export default function Login() {
       setErrorEmail("Required*");
       valid = false;
     } else {
-      setErrorEmail(""); // clear previous error
+      setErrorEmail("");
     }
 
     if (!password) {
       setErrorPassword("Required*");
       valid = false;
     } else {
-      setErrorPassword(""); // clear previous error
+      setErrorPassword(""); 
     }
 
     if (!valid) return;
@@ -103,10 +103,22 @@ export default function Login() {
           alignItems: "center",
         }}
       >
-        <CircularProgress 
-          size={60} 
-          sx={{ overflow: "hidden" }} 
-        />
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            bgcolor: "rgba(255,255,255,0.7)", 
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1300, 
+          }}
+        >
+          <CircularProgress size={80} />
+        </Box>
 
       </Container>
     );
