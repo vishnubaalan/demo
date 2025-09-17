@@ -1,6 +1,6 @@
 import * as React from "react";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -18,6 +18,11 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import Badge from "@mui/material/Badge";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import Tooltip from "@mui/material/Tooltip";
+import { useCart } from "../context/CartContext";
 
 const navItems = [
   { label: "Home", path: "/home" },
@@ -30,6 +35,16 @@ function NavBar(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const { totals } = useCart();
+
+  const location = useLocation();
+  const isActive = React.useCallback(
+    (path) => {
+      if (path === "/home") return location.pathname === "/home";
+      return location.pathname.startsWith(path);
+    },
+    [location.pathname]
+  );
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -60,21 +75,40 @@ function NavBar(props) {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-        Products
-      </Typography>
+      <Box sx={{ my: 2, display: "flex", alignItems: "center", justifyContent: "center", gap: 1 }}>
+        <HomeRoundedIcon />
+        <Typography variant="h6" sx={{ fontWeight: 800, letterSpacing: "0.12em" }}>
+          PRODUCTS
+        </Typography>
+      </Box>
       <Divider />
       <List>
         {navItems.map((item) => (
           <ListItem key={item.label} disablePadding>
             <ListItemButton
-              sx={{ textAlign: "center" }}
+              sx={
+                isActive(item.path)
+                  ? { textAlign: 'center', bgcolor: 'primary.main', color: 'primary.contrastText', borderRadius: 1, mx: 1, '&:hover': { bgcolor: 'primary.dark' } }
+                  : { textAlign: 'center', '&:hover': { color: 'primary.main' } }
+              }
               onClick={() => handleNav(item.path)}
             >
               <ListItemText primary={item.label} />
             </ListItemButton>
           </ListItem>
         ))}
+        <ListItem disablePadding>
+          <ListItemButton
+            sx={
+              isActive('/cart')
+                ? { textAlign: 'center', bgcolor: 'primary.main', color: 'primary.contrastText', borderRadius: 1, mx: 1, '&:hover': { bgcolor: 'primary.dark' } }
+                : { textAlign: 'center', '&:hover': { color: 'primary.main' } }
+            }
+            onClick={() => handleNav('/cart')}
+          >
+            <ListItemText primary={`Cart (${totals.count})`} />
+          </ListItemButton>
+        </ListItem>
         <ListItem disablePadding>
           <ListItemButton sx={{ textAlign: "center" }} onClick={handleLogout}>
             <ListItemText primary="Logout" />
@@ -90,7 +124,7 @@ function NavBar(props) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar component="nav">
+      <AppBar component="nav" position="fixed" color="default" sx={{ borderBottom: '1px solid', borderColor: 'divider' }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -101,25 +135,56 @@ function NavBar(props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+          <Box
             onClick={() => navigate("/home")}
-            style={{ cursor: "pointer" }}
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", sm: "flex" },
+              alignItems: "center",
+              gap: 1,
+              cursor: "pointer",
+            }}
           >
-            Products
-          </Typography>
-          <Box sx={{ display: { xs: "none", sm: "block" } }}>
+            <HomeRoundedIcon fontSize="large" />
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase" }}
+            >
+              Products
+            </Typography>
+          </Box>
+          <Box sx={{ display: { xs: "none", sm: "flex" }, alignItems: "center", gap: 1 }}>
             {navItems.map((item) => (
               <Button
                 key={item.label}
-                sx={{ color: "#fff" }}
+                variant={isActive(item.path) ? 'contained' : 'text'}
+                color={isActive(item.path) ? 'primary' : 'inherit'}
+                sx={
+                  isActive(item.path)
+                    ? { color: 'primary.contrastText' }
+                    : { '&:hover': { color: 'primary.main', backgroundColor: 'transparent' } }
+                }
                 onClick={() => handleNav(item.path)}
               >
                 {item.label}
               </Button>
             ))}
+            <Tooltip title="Cart">
+              <IconButton
+                color="inherit"
+                sx={
+                  isActive('/cart')
+                    ? { bgcolor: 'primary.main', color: 'primary.contrastText', borderRadius: 1, '&:hover': { bgcolor: 'primary.dark' } }
+                    : { '&:hover': { color: 'primary.main' } }
+                }
+                onClick={() => handleNav('/cart')}
+              >
+                <Badge badgeContent={totals.count} color="secondary" max={99}>
+                  <ShoppingCartOutlinedIcon />
+                </Badge>
+              </IconButton>
+            </Tooltip>
             <IconButton color="inherit" onClick={handleProfileMenuOpen} sx={{ ml: 1 }}>
               <AccountCircle />
             </IconButton>
@@ -156,9 +221,6 @@ function NavBar(props) {
           {drawer}
         </Drawer>
       </nav>
-      <Box component="main" sx={{ p: { xs: 1, sm: 3 } }}>
-        <Toolbar />
-      </Box>
     </Box>
   );
 }

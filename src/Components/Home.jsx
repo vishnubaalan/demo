@@ -21,14 +21,18 @@ import {
   ToggleButtonGroup,
   Drawer,
   InputAdornment,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 
 const fallbackImage =
   "https://dummyimage.com/300x225/cccccc/000000&text=No+Image";
@@ -50,6 +54,8 @@ export default function Home() {
   const [priceBounds, setPriceBounds] = useState([0, 0]);
   const [filterOpen, setFilterOpen] = useState(false);
   const navigate = useNavigate();
+  const { addItem } = useCart();
+  const [snackOpen, setSnackOpen] = useState(false);
 
   const computeMeta = (list) => {
     const prices = list.map((p) => Number(p.price) || 0);
@@ -105,8 +111,6 @@ export default function Home() {
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
-
-  // moved below searchProducts to avoid temporal dead zone
 
   useEffect(() => {
     (async () => {
@@ -264,6 +268,11 @@ export default function Home() {
     }
   };
 
+  const handleAddToCart = (product) => {
+    addItem(product, 1);
+    setSnackOpen(true);
+  };
+
   const displayedProducts = useMemo(() => {
     let list = [...products];
 
@@ -291,16 +300,15 @@ export default function Home() {
             left: 0,
             width: "100%",
             height: "100%",
-            bgcolor: "rgba(255,255,255,0.7)", 
+            bgcolor: "rgba(255,255,255,0.7)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 1300, 
+            zIndex: 1300,
           }}
         >
           <CircularProgress size={80} />
         </Box>
-
       </Container>
     );
   }
@@ -308,15 +316,13 @@ export default function Home() {
   const formatPrice = (price) => `₹${Number(price).toLocaleString()}`;
 
   return (
-    <Container sx={{ py: 5, px: { xs: 1, sm: 3 }, maxWidth: "lg" }}>
-      <Typography
-        variant="h4"
-        gutterBottom
-        align="left"
-        sx={{ fontWeight: 700, mb: 2 }}
-      >
-        🛒 Product List
-      </Typography>
+    <Container sx={{ pt: 3, pb: 5, px: { xs: 1, sm: 3 }, maxWidth: "lg" }}>
+      {/* <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+        <HomeRoundedIcon fontSize="large" />
+        <Typography variant="h5" sx={{ fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+          Products
+        </Typography>
+      </Box> */}
 
       <Box sx={{ mb: 3 }}>
         <Box
@@ -328,7 +334,11 @@ export default function Home() {
             flexWrap: "wrap",
           }}
         >
-          <Box component="form" onSubmit={handleSearch} sx={{ flex: "0 1 auto" }}>
+          <Box
+            component="form"
+            onSubmit={handleSearch}
+            sx={{ flex: "0 1 auto" }}
+          >
             <TextField
               placeholder="Search products..."
               value={search}
@@ -339,7 +349,7 @@ export default function Home() {
                 endAdornment: (
                   <InputAdornment position="end">
                     {search ? (
-                      <IconButton size="small" onClick={() => setSearch("")}> 
+                      <IconButton size="small" onClick={() => setSearch("")}>
                         <ClearIcon fontSize="small" />
                       </IconButton>
                     ) : null}
@@ -351,7 +361,9 @@ export default function Home() {
 
           <Formik
             initialValues={{ addTitle: "" }}
-            validationSchema={Yup.object({ addTitle: Yup.string().required("Required") })}
+            validationSchema={Yup.object({
+              addTitle: Yup.string().required("Required"),
+            })}
             onSubmit={handleAddProduct}
           >
             {({ isSubmitting, errors, touched, handleChange, values }) => (
@@ -364,19 +376,43 @@ export default function Home() {
                     onChange={handleChange}
                     size="small"
                     error={touched.addTitle && Boolean(errors.addTitle)}
-                    helperText={touched.addTitle && errors.addTitle}
+                    helperText={
+                      touched.addTitle && errors.addTitle
+                        ? errors.addTitle
+                        : " "
+                    }
                     sx={{ width: 200 }}
                   />
+
                   <Button
                     type="submit"
                     disabled={isSubmitting}
                     variant="contained"
                     color="primary"
                     size="small"
-                    sx={{ minWidth: 72 }}
+                    sx={{ minWidth: 72, top: -11 }}
                   >
                     Add
                   </Button>
+
+                  {isSubmitting && (
+                    <Box
+                      sx={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: "100vw",
+                        height: "100vh",
+                        backgroundColor: "rgba(255,255,255,0.6)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: 9999,
+                      }}
+                    >
+                      <CircularProgress size={80} />
+                    </Box>
+                  )}
                 </Box>
               </Form>
             )}
@@ -417,7 +453,11 @@ export default function Home() {
                 </Select>
               </FormControl>
 
-              <FormControl size="small" fullWidth>
+              <FormControl
+                size="small"
+                fullWidth
+                sx={{ marginTop: "4px", display: "flex" }}
+              >
                 <InputLabel id="sortby-label">Sort by</InputLabel>
                 <Select
                   labelId="sortby-label"
@@ -450,7 +490,6 @@ export default function Home() {
               alignItems: "center",
               justifyContent: "space-between",
               flexWrap: "wrap",
-              gap: 2,
             }}
           >
             <Typography variant="subtitle1" color="text.secondary">
@@ -544,9 +583,10 @@ export default function Home() {
                   >
                     <Box
                       sx={{
-                        position: "relative",
-                        width: "100%",
-                        pt: "100%",
+                        position: "relative ",
+                        width: "50%",
+                        pt: "50%",
+                        mx: "auto",
                         overflow: "hidden",
                         backgroundColor: "#fafafa",
                       }}
@@ -703,13 +743,30 @@ export default function Home() {
                         >
                           <Tooltip title="Add to cart">
                             <Button
-                              variant="outlined"
+                              variant="contained"
                               size="small"
-                              onClick={() => navigate(`/product/${product.id}`)}
+                              onClick={() => handleAddToCart(product)}
                             >
-                              Add to Cart
+                              Add to cart
                             </Button>
                           </Tooltip>
+                          <Button
+                            title="View"
+                            variant="outlined"
+                            size="small"
+                            onClick={() => navigate(`/product/${product.id}`)}
+                          >
+                            View
+                          </Button>
+                        </Box>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            gap: 1,
+                            mt: 1,
+                            justifyContent: "center",
+                          }}
+                        >
                           <Tooltip title="Edit product">
                             <IconButton
                               size="small"
@@ -745,6 +802,21 @@ export default function Home() {
           onChange={(_, p) => setSkip((p - 1) * limit)}
         />
       </Box>
+      <Snackbar
+        open={snackOpen}
+        autoHideDuration={2000}
+        onClose={() => setSnackOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackOpen(false)}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          Added to cart
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }

@@ -43,7 +43,7 @@ export default function ContactUs() {
   };
 
   return (
-    <Container maxWidth="md" sx={{ mt: 6, mb: 6 }}>
+    <Container maxWidth="md" sx={{ pt: 3, pb: 6 }}>
       <Typography variant="h3" align="center" gutterBottom fontWeight="bold">
         Get in Touch
       </Typography>
@@ -65,7 +65,7 @@ export default function ContactUs() {
             <Typography variant="h5" gutterBottom>
               Contact Information
             </Typography>
-            <Stack spacing={3} mt={2}>
+            <Stack spacing={3} mt={2} sx={{ minHeight: "330px" }} gap={2}>
               <Box display="flex" alignItems="center">
                 <Email sx={{ mr: 2 }} /> contact@demo.net
               </Box>

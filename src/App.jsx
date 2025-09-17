@@ -5,11 +5,14 @@ import About from "./Components/About";
 import Contact from "./Components/Contact";
 import ProductDetail from "./Components/ProductDetail";
 import NavBar from "./Components/NavBar";
+import Cart from "./Components/Cart";
+import Toolbar from "@mui/material/Toolbar";
 
 function Layout() {
   return (
     <>
       <NavBar />
+      <Toolbar />
       <Outlet />
     </>
   );
@@ -66,6 +69,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Contact />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <Cart />
             </ProtectedRoute>
           }
         />

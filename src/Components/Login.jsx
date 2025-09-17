@@ -13,25 +13,16 @@ import {
   IconButton,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 
 const USER = {
   email: "vishnu@gmail.com",
-  // password: Abcd@1234 hashed with SHA-256
-  passwordHash:
-    "efc8fba9489b1d63fb2efe99f2695aa40a8e3ee9c00738145ddd632f8c4c39d2",
+  password: "Password123@", 
 };
-
-async function hashPassword(password) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await window.crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(hashBuffer))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
 
 export default function Login() {
   const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorEmail, setErrorEmail] = useState("");
@@ -39,14 +30,14 @@ export default function Login() {
   const [authError, setAuthError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [passwordStatus, setPasswordStatus] = useState(null); 
+  const [passwordStatus, setPasswordStatus] = useState(null);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     setErrorEmail("");
     setErrorPassword("");
@@ -57,34 +48,28 @@ export default function Login() {
     if (!email) {
       setErrorEmail("Required*");
       valid = false;
-    } else {
-      setErrorEmail("");
     }
 
     if (!password) {
       setErrorPassword("Required*");
       valid = false;
-    } else {
-      setErrorPassword(""); 
     }
 
     if (!valid) return;
 
     setLoading(true);
-    setTimeout(async () => {
-      if (email !== USER.email) {
+
+    setTimeout(() => {
+      const emailOk = email === USER.email;
+      const passwordOk = password === USER.password;
+
+      if (!emailOk || !passwordOk) {
         setLoading(false);
         setPasswordStatus("error");
         setAuthError("Invalid email or password");
         return;
       }
-      const hashed = await hashPassword(password);
-      if (hashed !== USER.passwordHash) {
-        setLoading(false);
-        setPasswordStatus("error");
-        setAuthError("Invalid email or password");
-        return;
-      }
+
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("userEmail", email);
       setLoading(false);
@@ -110,16 +95,15 @@ export default function Login() {
             left: 0,
             width: "100%",
             height: "100%",
-            bgcolor: "rgba(255,255,255,0.7)", 
+            bgcolor: "rgba(255,255,255,0.7)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 1300, 
+            zIndex: 1300,
           }}
         >
           <CircularProgress size={80} />
         </Box>
-
       </Container>
     );
   }
@@ -135,10 +119,14 @@ export default function Login() {
     >
       <Card sx={{ maxWidth: 400, width: "100%", mx: 1 }}>
         <CardContent>
-          <Typography variant="h5" align="center" gutterBottom>
-            Welcome!
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1 }}>
+            <HomeRoundedIcon fontSize="large" />
+            <Typography variant="h5" sx={{ fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+              Products
+            </Typography>
+          </Box>
           <Typography variant="body2" align="center" gutterBottom>
+            <h4 style={{fontWeight:"bold"}}>Welcome to Login</h4>
             Sign in to continue.
           </Typography>
           <form onSubmit={handleLogin} autoComplete="off">
@@ -168,20 +156,18 @@ export default function Login() {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      aria-label={
-                        showPassword ? "Hide password" : "Show password"
-                      }
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                       onClick={handleClickShowPassword}
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
-                      sx={{
-                        color:
-                          passwordStatus === "error"
-                            ? "error.main"
-                            : passwordStatus === "success"
-                            ? "success.main"
-                            : undefined,
-                      }}
+                      // sx={{
+                      //   color:
+                      //     passwordStatus === "error"
+                      //       ? "error.main"
+                      //       : passwordStatus === "success"
+                      //       ? "success.main"
+                      //       : undefined,
+                      // }}
                     >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
