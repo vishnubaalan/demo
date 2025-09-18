@@ -22,7 +22,8 @@ import Badge from "@mui/material/Badge";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import Tooltip from "@mui/material/Tooltip";
-import { useCart } from "../context/CartContext";
+import { useSelector } from "react-redux";
+import { selectTotals } from "../store/cartSlice";
 
 const navItems = [
   { label: "Home", path: "/home" },
@@ -35,7 +36,7 @@ function NavBar(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const { totals } = useCart();
+  const totals = useSelector(selectTotals);
 
   const location = useLocation();
   const isActive = React.useCallback(

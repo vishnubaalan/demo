@@ -4,7 +4,8 @@ import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import App from "./App";
-import { CartProvider } from "./context/CartContext";
+import { Provider } from "react-redux";
+import { store } from "./store";
 
 const theme = createTheme({
   palette: {
@@ -31,9 +32,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
-        <CartProvider>
+        <Provider store={store}>
           <App />
-        </CartProvider>
+        </Provider>
       </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>

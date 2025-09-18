@@ -25,7 +25,8 @@ import {
   ShoppingCartOutlined as ShoppingCartOutlinedIcon, 
   FavoriteBorder as FavoriteBorderIcon 
 } from "@mui/icons-material";
-import { useCart } from "../context/CartContext";
+import { useDispatch } from "react-redux";
+import { addItem as addItemAction } from "../store/cartSlice";
 
 function ProductDetail() {
   const { id } = useParams();
@@ -35,7 +36,7 @@ function ProductDetail() {
   const [product, setProduct] = useState(initialProduct);
   const [loading, setLoading] = useState(!initialProduct);
   const [notFound, setNotFound] = useState(false);
-  const { addItem } = useCart();
+  const dispatch = useDispatch();
   const [qty, setQty] = useState(1);
   const [snackOpen, setSnackOpen] = useState(false);
 
@@ -285,7 +286,7 @@ function ProductDetail() {
                         color="primary"
                         startIcon={<ShoppingCartOutlinedIcon />}
                         onClick={() => {
-                          addItem(product, qty);
+                          dispatch(addItemAction({ product, qty }));
                           setSnackOpen(true);
                         }}
                         sx={{ borderRadius: 2, px: 2.5 }}

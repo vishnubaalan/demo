@@ -25,7 +25,8 @@ import {
   Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../context/CartContext";
+import { useDispatch } from "react-redux";
+import { addItem as addItemAction } from "../store/cartSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -54,7 +55,7 @@ export default function Home() {
   const [priceBounds, setPriceBounds] = useState([0, 0]);
   const [filterOpen, setFilterOpen] = useState(false);
   const navigate = useNavigate();
-  const { addItem } = useCart();
+  const dispatch = useDispatch();
   const [snackOpen, setSnackOpen] = useState(false);
 
   const computeMeta = (list) => {
@@ -269,7 +270,7 @@ export default function Home() {
   };
 
   const handleAddToCart = (product) => {
-    addItem(product, 1);
+    dispatch(addItemAction({ product, qty: 1 }));
     setSnackOpen(true);
   };
 

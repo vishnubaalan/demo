@@ -15,10 +15,19 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../context/CartContext";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectItems,
+  selectTotals,
+  updateQty as updateQtyAction,
+  removeItem as removeItemAction,
+  clear as clearAction,
+} from "../store/cartSlice";
 
 export default function Cart() {
-  const { items, updateQty, removeItem, clear, totals } = useCart();
+  const dispatch = useDispatch();
+  const items = useSelector(selectItems);
+  const totals = useSelector(selectTotals);
   const navigate = useNavigate();
 
   const tax = totals.subtotal * 0.1;
@@ -99,7 +108,11 @@ export default function Cart() {
                       type="number"
                       size="small"
                       value={i.quantity}
-                      onChange={(e) => updateQty(i.id, Number(e.target.value))}
+                      onChange={(e) =>
+                        dispatch(
+                          updateQtyAction({ id: i.id, qty: Number(e.target.value) })
+                        )
+                      }
                       inputProps={{
                         min: 1,
                         max: i.stock || 99,
@@ -111,7 +124,10 @@ export default function Cart() {
                     >
                       ₹{(Number(i.price) * Number(i.quantity)).toLocaleString()}
                     </Typography>
-                    <IconButton color="error" onClick={() => removeItem(i.id)}>
+                    <IconButton
+                      color="error"
+                      onClick={() => dispatch(removeItemAction(i.id))}
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </Stack>
@@ -122,7 +138,7 @@ export default function Cart() {
                 justifyContent="space-between"
                 sx={{ mt: 2 }}
               >
-                <Button color="error" onClick={clear}>
+                <Button color="error" onClick={() => dispatch(clearAction())}>
                   Clear cart
                 </Button>
               </Stack>

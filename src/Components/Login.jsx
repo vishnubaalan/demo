@@ -17,7 +17,7 @@ import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 
 const USER = {
   email: "vishnu@gmail.com",
-  password: "Password123@", 
+  password: "Password123@",
 };
 
 export default function Login() {
@@ -119,14 +119,29 @@ export default function Login() {
     >
       <Card sx={{ maxWidth: 400, width: "100%", mx: 1 }}>
         <CardContent>
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mb: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+              mb: 1,
+            }}
+          >
             <HomeRoundedIcon fontSize="large" />
-            <Typography variant="h5" sx={{ fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: 800,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+              }}
+            >
               Products
             </Typography>
           </Box>
           <Typography variant="body2" align="center" gutterBottom>
-            <h4 style={{fontWeight:"bold"}}>Welcome to Login</h4>
+            <h4 style={{ fontWeight: "bold" }}>Welcome to Login</h4>
             Sign in to continue.
           </Typography>
           <form onSubmit={handleLogin} autoComplete="off">
@@ -156,7 +171,9 @@ export default function Login() {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
                       onClick={handleClickShowPassword}
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
