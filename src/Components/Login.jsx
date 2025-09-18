@@ -102,7 +102,7 @@ export default function Login() {
             zIndex: 1300,
           }}
         >
-          <CircularProgress size={80} />
+          <CircularProgress size={50} />
         </Box>
       </Container>
     );

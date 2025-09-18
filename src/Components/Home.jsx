@@ -308,7 +308,7 @@ export default function Home() {
             zIndex: 1300,
           }}
         >
-          <CircularProgress size={80} />
+          <CircularProgress size={50} />
         </Box>
       </Container>
     );
@@ -411,7 +411,7 @@ export default function Home() {
                         zIndex: 9999,
                       }}
                     >
-                      <CircularProgress size={80} />
+                      <CircularProgress size={50} />
                     </Box>
                   )}
                 </Box>

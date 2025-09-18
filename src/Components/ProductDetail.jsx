@@ -20,10 +20,10 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { 
-  ArrowBack as ArrowBackIcon, 
-  ShoppingCartOutlined as ShoppingCartOutlinedIcon, 
-  FavoriteBorder as FavoriteBorderIcon 
+import {
+  ArrowBack as ArrowBackIcon,
+  ShoppingCartOutlined as ShoppingCartOutlinedIcon,
+  FavoriteBorder as FavoriteBorderIcon,
 } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { addItem as addItemAction } from "../store/cartSlice";
@@ -100,7 +100,9 @@ function ProductDetail() {
           description: p.description,
         });
         return axios.get(
-          `https://dummyjson.com/products/category/${encodeURIComponent(p.category)}`,
+          `https://dummyjson.com/products/category/${encodeURIComponent(
+            p.category
+          )}`,
           { params: { limit: 8 } }
         );
       })
@@ -188,14 +190,14 @@ function ProductDetail() {
             left: 0,
             width: "100%",
             height: "100%",
-            bgcolor: "rgba(255,255,255,0.7)", 
+            bgcolor: "rgba(255,255,255,0.7)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 1300, 
+            zIndex: 1300,
           }}
         >
-          <CircularProgress size={80} />
+          <CircularProgress size={50} />
         </Box>
       </Container>
     );
@@ -244,7 +246,11 @@ function ProductDetail() {
                       {Number(product.rating || 0).toFixed(1)}
                     </Typography>
                     <Chip size="small" label={product.brand} />
-                    <Chip size="small" label={product.category} variant="outlined" />
+                    <Chip
+                      size="small"
+                      label={product.category}
+                      variant="outlined"
+                    />
                   </Stack>
                   <Divider sx={{ my: 2 }} />
                   <Typography
@@ -255,12 +261,19 @@ function ProductDetail() {
                     ₹{Number(product.price).toLocaleString()}
                   </Typography>
                   {product.discountPercentage ? (
-                    <Typography variant="body2" color="success.main" sx={{ mt: 0.5 }}>
+                    <Typography
+                      variant="body2"
+                      color="success.main"
+                      sx={{ mt: 0.5 }}
+                    >
                       Save {product.discountPercentage}% today
                     </Typography>
                   ) : null}
 
-                  <Typography variant="body1" sx={{ mt: 2, width: "50%", whiteSpace: "pre-line" }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ mt: 2, width: "50%", whiteSpace: "pre-line" }}
+                  >
                     {product.description}
                   </Typography>
 
@@ -318,38 +331,41 @@ function ProductDetail() {
                 <Grid item xs={12} md={5}>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                     <Stack spacing={1}>
-                      {(product.images || [product.thumbnail]).map((img, idx) => (
-                        <Box
-                          key={idx}
-                          onClick={() => setActiveImageIndex(idx)}
-                          sx={{                            
-                            width: 72,
-                            height: 72,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            bgcolor: "#f7f7f7",
-                            borderRadius: 1,
-                            border: idx === activeImageIndex ? 2 : 1,
-                            borderColor:
-                              idx === activeImageIndex ? "primary.main" : "divider",
-                            p: 0.5,
-                            cursor: "pointer",
-                            
-                          }}
-                        >
-                          <img
-                            src={img}
-                            alt={`thumb-${idx}`}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "cover",
-                              borderRadius: 4,
+                      {(product.images || [product.thumbnail]).map(
+                        (img, idx) => (
+                          <Box
+                            key={idx}
+                            onClick={() => setActiveImageIndex(idx)}
+                            sx={{
+                              width: 72,
+                              height: 72,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              bgcolor: "#f7f7f7",
+                              borderRadius: 1,
+                              border: idx === activeImageIndex ? 2 : 1,
+                              borderColor:
+                                idx === activeImageIndex
+                                  ? "primary.main"
+                                  : "divider",
+                              p: 0.5,
+                              cursor: "pointer",
                             }}
-                          />
-                        </Box>
-                      ))}
+                          >
+                            <img
+                              src={img}
+                              alt={`thumb-${idx}`}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                                borderRadius: 4,
+                              }}
+                            />
+                          </Box>
+                        )
+                      )}
                     </Stack>
 
                     <Box
@@ -362,7 +378,10 @@ function ProductDetail() {
                       }}
                     >
                       <img
-                        src={product.images?.[activeImageIndex] || product.thumbnail}
+                        src={
+                          product.images?.[activeImageIndex] ||
+                          product.thumbnail
+                        }
                         alt={product.title}
                         style={{
                           position: "absolute",
@@ -371,7 +390,6 @@ function ProductDetail() {
                           height: "100%",
                           objectFit: "contain",
                           padding: 8,
-
                         }}
                       />
                     </Box>
@@ -389,23 +407,57 @@ function ProductDetail() {
           <Grid container spacing={2}>
             {relatedProducts.map((p) => (
               <Grid key={p.id} item xs={12} sm={6} md={3}>
-                <Card onClick={() => navigate(`/product/${p.id}`)} sx={{ cursor: "pointer", height: "100%" }}>
-                  <Box sx={{ position: "relative", width: "100%", pt: "75%", backgroundColor: "#f7f7f7" }}>
+                <Card
+                  onClick={() => navigate(`/product/${p.id}`)}
+                  sx={{ cursor: "pointer", height: "100%" }}
+                >
+                  <Box
+                    sx={{
+                      position: "relative",
+                      width: "100%",
+                      pt: "75%",
+                      backgroundColor: "#f7f7f7",
+                    }}
+                  >
                     <img
                       src={p.thumbnail}
                       alt={p.title}
-                      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", padding: 8 }}
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        padding: 8,
+                      }}
                     />
                   </Box>
                   <CardContent>
-                    <Typography variant="subtitle2" color="text.secondary" noWrap>
+                    <Typography
+                      variant="subtitle2"
+                      color="text.secondary"
+                      noWrap
+                    >
                       {p.brand}
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }} noWrap>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{ fontWeight: 600 }}
+                      noWrap
+                    >
                       {p.title}
                     </Typography>
-                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
-                      <Rating value={Number(p.rating) || 0} readOnly size="small" />
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      alignItems="center"
+                      sx={{ mt: 0.5 }}
+                    >
+                      <Rating
+                        value={Number(p.rating) || 0}
+                        readOnly
+                        size="small"
+                      />
                       <Typography variant="caption" color="text.secondary">
                         {Number(p.rating || 0).toFixed(1)}
                       </Typography>
@@ -420,7 +472,11 @@ function ProductDetail() {
           </Grid>
         </Box>
 
-        <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="update-product-title">
+        <Modal
+          open={openModal}
+          onClose={handleCloseModal}
+          aria-labelledby="update-product-title"
+        >
           <Box
             sx={{
               position: "absolute",
@@ -442,7 +498,9 @@ function ProductDetail() {
               fullWidth
               margin="normal"
               value={editValues.title}
-              onChange={(e) => setEditValues({ ...editValues, title: e.target.value })}
+              onChange={(e) =>
+                setEditValues({ ...editValues, title: e.target.value })
+              }
             />
             <TextField
               label="Price"
@@ -450,7 +508,9 @@ function ProductDetail() {
               fullWidth
               margin="normal"
               value={editValues.price}
-              onChange={(e) => setEditValues({ ...editValues, price: e.target.value })}
+              onChange={(e) =>
+                setEditValues({ ...editValues, price: e.target.value })
+              }
             />
             <TextField
               label="Description"
@@ -459,9 +519,17 @@ function ProductDetail() {
               multiline
               rows={3}
               value={editValues.description}
-              onChange={(e) => setEditValues({ ...editValues, description: e.target.value })}
+              onChange={(e) =>
+                setEditValues({ ...editValues, description: e.target.value })
+              }
             />
-            <Button variant="contained" sx={{ mt: 2 }} color="primary" onClick={handleUpdate} fullWidth>
+            <Button
+              variant="contained"
+              sx={{ mt: 2 }}
+              color="primary"
+              onClick={handleUpdate}
+              fullWidth
+            >
               Save Changes
             </Button>
           </Box>
@@ -472,7 +540,12 @@ function ProductDetail() {
           onClose={() => setSnackOpen(false)}
           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         >
-          <Alert onClose={() => setSnackOpen(false)} severity="success" variant="filled" sx={{ width: "100%" }}>
+          <Alert
+            onClose={() => setSnackOpen(false)}
+            severity="success"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
             Added to cart
           </Alert>
         </Snackbar>
